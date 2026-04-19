@@ -6,10 +6,16 @@ import JobCard from '@/components/JobCard';
 import { Bookmark, Sparkles, Loader2, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import { useAuthStore } from '@/store/authStore';
+import SubscriptionPaywall from '@/components/SubscriptionPaywall';
+import { useState } from 'react';
 
 const BookmarksPage = () => {
+  const { user } = useAuthStore();
+  const [isPaywallOpen, setIsPaywallOpen] = useState(false);
+
   const { data: bookmarks, isLoading } = useQuery({
     queryKey: ['bookmarks'],
     queryFn: async () => {
@@ -17,6 +23,17 @@ const BookmarksPage = () => {
       return res.data;
     }
   });
+
+  const handleViewDetails = (id: string) => {
+    const job = bookmarks?.find((j: any) => (j.id?.toString() || j._id?.toString()) === id);
+    const isSubscribed = user?.subscription?.is_subscribed || user?.role === 'admin' || user?.role === 'super_admin';
+    
+    if (!user || (job?.is_locked && !isSubscribed)) {
+      setIsPaywallOpen(true);
+    } else {
+      window.location.href = `/jobs/${id}`;
+    }
+  };
 
   if (isLoading) {
     return (
@@ -68,11 +85,22 @@ const BookmarksPage = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {bookmarks?.map((job: any) => (
-              <JobCard key={job.id} job={job} />
+              <JobCard 
+                key={job.id?.toString() || job._id?.toString() || Math.random()} 
+                job={job} 
+                onViewDetails={handleViewDetails}
+              />
             ))}
           </div>
         )}
+
+        <SubscriptionPaywall 
+          isOpen={isPaywallOpen} 
+          onClose={() => setIsPaywallOpen(false)} 
+          onSubscribe={() => window.location.href = '/pricing'} 
+        />
       </div>
+
     </ProtectedRoute>
   );
 };
