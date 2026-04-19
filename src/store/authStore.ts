@@ -11,6 +11,7 @@ interface User {
     is_subscribed: boolean;
     end_date?: string;
   };
+  bookmarks: string[];
 }
 
 interface AuthState {

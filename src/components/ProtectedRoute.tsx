@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/authStore';
 import { Loader2 } from 'lucide-react';
@@ -10,27 +10,32 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole }) => {
-  const { user, isLoading } = useAuthStore();
+  const { user } = useAuthStore();
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    if (!isLoading && !user) {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted && !user) {
       router.push('/login');
     }
     
-    if (!isLoading && user && requiredRole) {
+    if (mounted && user && requiredRole) {
       // Role hierarchy
       const roles = ['user', 'admin', 'super_admin'];
       const userRank = roles.indexOf(user.role);
       const requiredRank = roles.indexOf(requiredRole);
       
       if (userRank < requiredRank) {
-        router.push('/'); // Or a "Not Authorized" page
+        router.push('/'); 
       }
     }
-  }, [user, isLoading, router, requiredRole]);
+  }, [user, mounted, router, requiredRole]);
 
-  if (isLoading || !user) {
+  if (!mounted || !user) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen gap-4 bg-white">
         <Loader2 className="animate-spin text-[#10B981]" size={40} />

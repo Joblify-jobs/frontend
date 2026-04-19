@@ -10,6 +10,7 @@ import SubscriptionPaywall from '@/components/SubscriptionPaywall';
 import { useAuthStore } from '@/store/authStore';
 import { useDebounce } from '@/hooks/useDebounce';
 import { Loader2, Sparkles, TrendingUp } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const JobsPage = () => {
