@@ -195,14 +195,14 @@ const SuperAdminDashboard = () => {
 
         {activeTab === 'users' && (
           <Card className="border-gray-100 shadow-2xl rounded-[3rem] overflow-hidden bg-white">
-            <CardHeader className="px-10 py-10 border-b border-gray-50">
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+            <CardHeader className="px-6 md:px-10 py-8 md:py-10 border-b border-gray-50">
+              <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8">
                 <div>
-                  <CardTitle className="text-3xl font-black tracking-tighter">User Management</CardTitle>
+                  <CardTitle className="text-2xl md:text-3xl font-black tracking-tighter">User Management</CardTitle>
                   <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.3em] mt-1">Control access and roles</p>
                 </div>
-                <div className="flex w-full md:w-auto gap-4">
-                  <div className="relative flex-1 md:w-80 group">
+                <div className="flex flex-col sm:flex-row w-full lg:w-auto gap-4">
+                  <div className="relative flex-1 lg:w-80 group">
                     <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-hover:text-[#10B981] transition-colors" />
                     <input 
                       type="text" 
@@ -212,37 +212,37 @@ const SuperAdminDashboard = () => {
                       className="w-full bg-gray-50 border-gray-100 rounded-2xl py-3.5 pl-12 pr-4 text-sm font-bold focus:ring-4 focus:ring-[#10B981]/10 outline-none transition-all"
                     />
                   </div>
-                  <Button onClick={() => setIsAddModalOpen(true)} className="h-14 bg-[#10B981] hover:bg-[#0D9668] rounded-2xl px-6 aspect-square md:aspect-auto">
-                    <Plus size={20} className="md:mr-2" /> <span className="hidden md:inline font-black uppercase tracking-widest text-[10px]">Add Admin</span>
+                  <Button onClick={() => setIsAddModalOpen(true)} className="h-14 bg-[#10B981] hover:bg-[#0D9668] rounded-2xl px-6 flex items-center justify-center">
+                    <Plus size={20} className="mr-2" /> <span className="font-black uppercase tracking-widest text-[10px]">Add Admin</span>
                   </Button>
                 </div>
               </div>
             </CardHeader>
             <div className="overflow-x-auto">
-              <table className="w-full text-left">
+              <table className="w-full text-left min-w-[800px]">
                 <thead>
                   <tr className="bg-gray-50/50 border-b border-gray-100">
-                    <th className="px-10 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400">Identity</th>
-                    <th className="px-10 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400 text-center">Permissions</th>
-                    <th className="px-10 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400 text-center">Subscription Status</th>
-                    <th className="px-10 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400 text-right">Actions</th>
+                    <th className="px-6 md:px-10 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400">Identity</th>
+                    <th className="px-6 md:px-10 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400 text-center">Permissions</th>
+                    <th className="px-6 md:px-10 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400 text-center">Subscription Status</th>
+                    <th className="px-6 md:px-10 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   {users?.map((u: any) => (
-                    <tr key={u.id} className="hover:bg-gray-50/30 transition-colors group">
-                      <td className="px-10 py-8">
+                    <tr key={u.id} className="hover:bg-gray-50/10 transition-colors group">
+                      <td className="px-6 md:px-10 py-6 md:py-8">
                          <div className="flex items-center gap-4">
-                           <div className="w-12 h-12 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center font-black text-[#10B981] group-hover:scale-105 transition-transform">
+                           <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center font-black text-[#10B981] group-hover:scale-105 transition-transform">
                              {u.name[0]}
                            </div>
                            <div>
                              <p className="font-black text-gray-900 group-hover:text-[#10B981] transition-colors">{u.name}</p>
-                             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{u.email}</p>
+                             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest break-all md:break-normal">{u.email}</p>
                            </div>
                          </div>
                       </td>
-                      <td className="px-10 py-8">
+                      <td className="px-6 md:px-10 py-6 md:py-8">
                           <div className="flex justify-center">
                             <select 
                               value={u.role}
@@ -256,13 +256,13 @@ const SuperAdminDashboard = () => {
                             </select>
                           </div>
                       </td>
-                      <td className="px-10 py-8">
+                      <td className="px-6 md:px-10 py-6 md:py-8">
                         <div className="flex flex-col items-center gap-2">
                           <Button 
                             onClick={() => toggleSubMutation.mutate({ id: u.id, status: !u.subscription.is_subscribed })}
                             variant={u.subscription.is_subscribed ? "default" : "outline"}
                             className={cn(
-                              "h-10 px-8 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+                              "h-10 px-6 md:px-8 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
                               u.subscription.is_subscribed ? "bg-[#10B981] hover:bg-[#0D9668]" : "border-gray-200 text-gray-400 hover:text-[#10B981] hover:border-[#10B981]"
                             )}
                           >
@@ -275,13 +275,13 @@ const SuperAdminDashboard = () => {
                           )}
                         </div>
                       </td>
-                      <td className="px-10 py-8 text-right">
-                        <div className="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <td className="px-6 md:px-10 py-6 md:py-8 text-right">
+                        <div className="flex justify-end gap-2 md:gap-3">
                            <Button 
                             disabled={u.role === 'super_admin'}
                             onClick={() => { setSelectedUser(u); setIsEditModalOpen(true); }}
                             variant="ghost" 
-                            className="h-10 w-10 p-0 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-xl transition-all"
+                            className="h-9 w-9 md:h-10 md:w-10 p-0 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-xl transition-all"
                           >
                             <Edit2 size={16} />
                           </Button>
@@ -289,7 +289,7 @@ const SuperAdminDashboard = () => {
                             disabled={u.role === 'super_admin'}
                             onClick={() => deleteUserMutation.mutate(u.id)}
                             variant="ghost" 
-                            className="h-10 w-10 p-0 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                            className="h-9 w-9 md:h-10 md:w-10 p-0 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
                           >
                             <Trash2 size={16} />
                           </Button>

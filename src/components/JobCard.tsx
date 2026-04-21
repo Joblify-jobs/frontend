@@ -46,34 +46,34 @@ const JobCard: React.FC<JobCardProps> = ({ job, onViewDetails }) => {
       whileHover={{ y: -8 }}
       className="group relative h-full"
     >
-      <div className="bg-white p-8 rounded-[3rem] border border-gray-200 shadow-xl transition-all duration-500 relative overflow-hidden h-full flex flex-col">
+      <div className="bg-white p-6 md:p-8 rounded-[2.5rem] md:rounded-[3rem] border border-gray-100 shadow-xl transition-all duration-500 relative overflow-hidden h-full flex flex-col hover:border-[#10B981]/30">
         {/* Background Glow */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-[#10B981]/5 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
         
-        <div className="flex justify-between items-start mb-8">
-          <div className="flex gap-4 items-center">
-            <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100 shadow-sm group-hover:scale-110 transition-transform duration-500">
-              <Building2 className={cn(isLocked ? "text-gray-400" : "text-[#10B981]")} size={24} />
+        <div className="flex justify-between items-start mb-6 md:mb-8">
+          <div className="flex gap-3 md:gap-4 items-center">
+            <div className="bg-gray-50 p-3 md:p-4 rounded-xl md:rounded-2xl border border-gray-100 shadow-sm group-hover:scale-110 transition-transform duration-500">
+              <Building2 className={cn(isLocked ? "text-gray-300" : "text-[#10B981]")} size={20} />
             </div>
             {user && (
               <button 
                 onClick={() => bookmarkMutation.mutate()}
                 className={cn(
-                  "p-3 rounded-xl border transition-all active:scale-90",
+                  "p-2.5 md:p-3 rounded-xl border transition-all active:scale-90",
                   isBookmarked 
                     ? "bg-[#10B981]/10 border-[#10B981]/20 text-[#10B981]" 
                     : "bg-gray-50 border-gray-100 text-gray-300 hover:text-gray-400 hover:bg-gray-100"
                 )}
               >
-                <Bookmark size={18} fill={isBookmarked ? "currentColor" : "none"} />
+                <Bookmark size={16} fill={isBookmarked ? "currentColor" : "none"} />
               </button>
             )}
           </div>
           <div className="flex items-center gap-2">
             {isLocked && (
-              <div className="flex items-center gap-1.5 px-3 py-1 bg-gray-100 border border-gray-200 rounded-full">
-                <Lock size={12} className="text-gray-400" />
-                <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest">Locked</span>
+              <div className="flex items-center gap-1.5 px-3 py-1 bg-gray-50 border border-gray-100 rounded-full">
+                <Lock size={10} className="text-gray-400" />
+                <span className="text-[9px] font-black uppercase text-gray-400 tracking-widest">Locked</span>
               </div>
             )}
           </div>
@@ -81,59 +81,59 @@ const JobCard: React.FC<JobCardProps> = ({ job, onViewDetails }) => {
 
         {/* Floating Star Tag */}
         {isNew && (
-          <div className="absolute top-0 right-0 w-16 h-16 overflow-hidden pr-0 pt-0">
-            <div className="absolute top-[-10px] right-[-10px] w-20 h-20 bg-[#10B981] rotate-45 flex items-center justify-center pt-8 shadow-lg">
-              <Sparkles size={14} className="text-white animate-pulse" />
-              <span className="text-white text-[8px] font-black uppercase tracking-tighter ml-1">NEW</span>
+          <div className="absolute top-0 right-0 w-14 h-14 overflow-hidden pr-0 pt-0">
+            <div className="absolute top-[-8px] right-[-8px] w-16 h-16 bg-[#10B981] rotate-45 flex items-center justify-center pt-6 shadow-lg">
+              <Sparkles size={12} className="text-white animate-pulse" />
+              <span className="text-white text-[7px] font-black uppercase tracking-tighter ml-1">NEW</span>
             </div>
           </div>
         )}
 
-        <div className="space-y-6 flex-grow">
+        <div className="space-y-4 md:space-y-6 flex-grow">
           <div>
-            <h3 className="text-2xl font-black text-gray-900 group-hover:text-[#10B981] transition-colors leading-tight">
+            <h3 className="text-xl md:text-2xl font-black text-gray-900 group-hover:text-[#10B981] transition-colors leading-tight">
               {job.role}
             </h3>
             <p className={cn(
-              "font-bold mt-2 text-sm uppercase tracking-[0.2em]",
-              isLocked ? "text-gray-400 italic" : "text-gray-500"
+              "font-bold mt-1 md:mt-2 text-[11px] md:text-sm uppercase tracking-[0.2em]",
+              isLocked ? "text-gray-300 italic" : "text-gray-400"
             )}>
               {job.company_name}
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-3">
-            <div className="flex items-center gap-2 text-gray-500 text-[10px] font-black uppercase tracking-widest bg-gray-50 px-4 py-2 rounded-xl border border-gray-100">
-              <Briefcase size={14} className="text-[#10B981]" /> {job.eligibility}
+          <div className="flex flex-wrap gap-2 md:gap-3">
+            <div className="flex items-center gap-2 text-gray-500 text-[9px] font-black uppercase tracking-widest bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
+              <Briefcase size={12} className="text-[#10B981]" /> {job.eligibility}
             </div>
-            <div className="flex items-center gap-2 text-gray-500 text-[10px] font-black uppercase tracking-widest bg-gray-50 px-4 py-2 rounded-xl border border-gray-100">
-              <MapPin size={14} className="text-blue-500" /> Remote
+            <div className="flex items-center gap-2 text-gray-500 text-[9px] font-black uppercase tracking-widest bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
+              <MapPin size={12} className="text-blue-500" /> Remote
             </div>
           </div>
 
-          <div className="p-5 rounded-[2rem] bg-gray-50 border border-gray-100 group-hover:border-[#10B981]/20 transition-colors">
-            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-2">
-              <Sparkles size={12} className="text-[#10B981]" /> Insider Note
+          <div className="p-4 md:p-5 rounded-2xl md:rounded-[2rem] bg-gray-50/50 border border-gray-100 group-hover:border-[#10B981]/10 transition-colors">
+            <p className="text-[9px] font-black text-gray-300 uppercase tracking-widest mb-1 md:mb-2 flex items-center gap-2">
+              <Sparkles size={10} className="text-[#10B981]" /> Insider Note
             </p>
-            <p className="text-sm text-gray-600 font-bold leading-relaxed italic">
+            <p className="text-xs md:text-sm text-gray-500 font-bold leading-relaxed italic line-clamp-2">
               "{job.important_note || "No specific notes provided for this role."}"
             </p>
           </div>
         </div>
 
-        <div className="mt-10 pt-6 border-t border-gray-100 flex items-center justify-between">
-          <div className="flex flex-col gap-0.5">
-            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Posted On</span>
+        <div className="mt-8 md:mt-10 pt-4 md:pt-6 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex flex-col gap-0.5 w-full sm:w-auto">
+            <span className="text-[9px] font-black text-gray-300 uppercase tracking-widest">Posted On</span>
             <div className="flex items-baseline gap-2">
                <span className="text-xs font-black text-gray-900">{format(date, 'dd MMM yyyy')}</span>
-               <span className="text-[10px] font-black text-[#10B981]">{format(date, 'hh:mm a')}</span>
+               <span className="text-[9px] font-black text-[#10B981]">{format(date, 'hh:mm a')}</span>
             </div>
           </div>
           
           <Button 
             onClick={() => onViewDetails(jobId)}
             className={cn(
-               "h-14 px-8 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all",
+               "h-12 md:h-14 w-full sm:w-auto px-8 rounded-xl md:rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all",
                isLocked 
                 ? "bg-gray-100 text-gray-400 hover:bg-gray-200" 
                 : "bg-[#10B981] text-white hover:bg-[#0D9668] shadow-lg shadow-[#10B981]/20 active:scale-95"

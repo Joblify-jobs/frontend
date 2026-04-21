@@ -22,17 +22,17 @@ const PricingPage = () => {
     <div className="py-12 space-y-12 relative overflow-hidden flex flex-col items-center bg-white min-h-[calc(100vh-80px)] overflow-y-auto lg:overflow-hidden">
       {/* Background Decor - Refined */}
       <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#10B981]/5 blur-[100px] rounded-full -z-10" />
-      
+
       <div className="text-center space-y-4 max-w-4xl mx-auto px-4">
         <motion.div
-           initial={{ opacity: 0, scale: 0.9 }}
-           animate={{ opacity: 1, scale: 1 }}
-           className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#10B981]/10 border border-[#10B981]/20 text-[#10B981] text-[8px] font-black tracking-[0.3em] uppercase"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#10B981]/10 border border-[#10B981]/20 text-[#10B981] text-[8px] font-black tracking-[0.3em] uppercase"
         >
           <Sparkles size={12} /> Full Access Pass
         </motion.div>
-        
-        <motion.h1 
+
+        <motion.h1
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-6xl md:text-8xl font-black tracking-tighter leading-none text-gray-900"
@@ -46,7 +46,7 @@ const PricingPage = () => {
 
       <div className="w-full max-w-xl mx-auto px-6">
         {/* Pro Plan Card */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           className="relative group p-1 pr-1 pb-1 rounded-[3rem] bg-gradient-to-br from-[#10B981]/20 to-[#3B82F6]/20 shadow-2xl"
@@ -59,7 +59,7 @@ const PricingPage = () => {
             <div className="space-y-4">
               <h2 className="text-xl font-black text-[#10B981] uppercase tracking-[0.2em]">Joblify Elite</h2>
               <div className="flex items-baseline gap-2">
-                <span className="text-7xl font-black text-gray-900 tracking-tighter">₹499</span>
+                <span className="text-7xl font-black text-gray-900 tracking-tighter">₹99</span>
                 <span className="text-gray-400 font-bold text-sm uppercase tracking-widest">/30days</span>
               </div>
             </div>
@@ -84,16 +84,16 @@ const PricingPage = () => {
               ))}
             </div>
 
-            <Button 
+            <Button
               onClick={handlePayment}
               className="w-full bg-gray-900 hover:bg-black text-white h-16 rounded-2xl font-black text-lg shadow-xl shadow-gray-200 active:scale-[0.98] transition-all flex gap-3 group"
             >
               Get Started <Rocket size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
             </Button>
-            
+
             <div className="flex items-center justify-center gap-2">
-               <ShieldCheck size={12} className="text-gray-300" />
-               <p className="text-center text-gray-400 text-[6px] font-black uppercase tracking-[0.2em]">Payments Secured by Instamojo</p>
+              <ShieldCheck size={12} className="text-gray-300" />
+              <p className="text-center text-gray-400 text-[6px] font-black uppercase tracking-[0.2em]">Payments Secured by Instamojo</p>
             </div>
           </div>
         </motion.div>

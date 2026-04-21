@@ -31,7 +31,7 @@ const LandingPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-6xl md:text-9xl font-black tracking-tighter text-gray-900"
+            className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter text-gray-900 leading-[0.9]"
           >
             Find your next <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#10B981] to-[#3B82F6]">
