@@ -8,9 +8,11 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { usePathname } from 'next/navigation';
 
 const Navbar = () => {
   const { user, logout } = useAuthStore();
+  const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -29,6 +31,8 @@ const Navbar = () => {
 
   if (!mounted) return null;
 
+  const isActive = (path: string) => pathname === path;
+
   return (
     <nav className={cn(
       "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b",
@@ -46,16 +50,51 @@ const Navbar = () => {
           </Link>
           
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-10">
-            <Link href="/jobs" className="text-gray-500 hover:text-[#10B981] transition-colors font-bold text-sm uppercase tracking-widest">Browse</Link>
-            <Link href="/pricing" className="text-gray-500 hover:text-[#10B981] transition-colors font-bold text-sm uppercase tracking-widest">Pricing</Link>
+          <div className="hidden md:flex items-center gap-6">
+            <Link 
+              href="/jobs" 
+              className={cn(
+                "transition-all font-black text-[10px] uppercase tracking-[0.2em] px-6 py-3 rounded-full",
+                isActive('/jobs') 
+                  ? "bg-[#10B981] text-white shadow-lg shadow-[#10B981]/30" 
+                  : "text-gray-500 hover:text-[#10B981]"
+              )}
+            >
+              Browse
+            </Link>
+            <Link 
+              href="/pricing" 
+              className={cn(
+                "transition-all font-black text-[10px] uppercase tracking-[0.2em] px-6 py-3 rounded-full",
+                isActive('/pricing') 
+                  ? "bg-[#10B981] text-white shadow-lg shadow-[#10B981]/30" 
+                  : "text-gray-500 hover:text-[#10B981]"
+              )}
+            >
+              Pricing
+            </Link>
             {user && (
-              <Link href="/bookmarks" className="text-gray-500 hover:text-[#10B981] transition-colors font-bold text-sm uppercase tracking-widest">Saved</Link>
+              <Link 
+                href="/bookmarks" 
+                className={cn(
+                  "transition-all font-black text-[10px] uppercase tracking-[0.2em] px-6 py-3 rounded-full",
+                  isActive('/bookmarks') 
+                    ? "bg-[#10B981] text-white shadow-lg shadow-[#10B981]/30" 
+                    : "text-gray-500 hover:text-[#10B981]"
+                )}
+              >
+                Saved
+              </Link>
             )}
             {user && (user.role === 'admin' || user.role === 'super_admin') && (
               <Link 
                 href={user.role === 'super_admin' ? "/super-admin/dashboard" : "/admin/dashboard"} 
-                className="text-[#10B981] font-black text-sm uppercase tracking-widest hover:brightness-125"
+                className={cn(
+                  "transition-all font-black text-[10px] uppercase tracking-[0.2em] px-6 py-3 rounded-full",
+                  isActive('/admin/dashboard') || isActive('/super-admin/dashboard')
+                    ? "bg-[#10B981] text-white shadow-lg shadow-[#10B981]/30" 
+                    : "text-[#10B981] border border-[#10B981] hover:bg-[#10B981] hover:text-white"
+                )}
               >
                 Dashboard
               </Link>

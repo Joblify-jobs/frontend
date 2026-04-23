@@ -2,165 +2,167 @@
 import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { 
-  CheckCircle2, Users, ShieldCheck, 
-  ArrowRight, Zap, Target, Shield, Briefcase, Sparkles, Globe 
+import {
+  CheckCircle2, Users, ShieldCheck,
+  Zap, Target, Shield, Sparkles
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+
+import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/store/authStore';
 
 const COMPANIES = ["Google", "Amazon", "Meta", "Microsoft", "Netflix", "Razorpay", "Uber", "Airbnb", "Spotify"];
 
 const LandingPage = () => {
+  const { user } = useAuthStore();
+  const router = useRouter();
+
+  const handleGetStarted = () => {
+    if (user) {
+      router.push('/jobs');
+    } else {
+      router.push('/login');
+    }
+  };
+
   return (
-    <div className="min-h-screen relative overflow-hidden bg-white selection:bg-[#10B981]/10 selection:text-[#10B981]">
-      {/* Refined Background Decor */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-screen h-screen bg-[radial-gradient(circle_at_50%_0%,rgba(16,185,129,0.05)_0%,transparent_50%)] pointer-events-none" />
-      
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 space-y-48 py-32 relative">
+    <div className="min-h-screen relative overflow-x-hidden bg-white selection:bg-[#10B981]/10 selection:text-[#10B981]">
+      {/* Background Decor */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-screen h-screen bg-[radial-gradient(circle_at_50%_0%,rgba(16,185,129,0.08)_0%,transparent_50%)] pointer-events-none" />
+      <div className="absolute top-[15%] -right-24 w-96 h-96 bg-blue-500/5 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-[20%] -left-24 w-96 h-96 bg-[#10B981]/5 blur-[120px] rounded-full pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">
         {/* HERO SECTION */}
-        <section className="text-center space-y-16 max-w-5xl mx-auto flex flex-col items-center">
+        <section className="pt-16 md:pt-24 pb-12 text-center space-y-8 max-w-4xl mx-auto flex flex-col items-center">
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-[#10B981]/5 border border-[#10B981]/10 text-[#10B981] text-[10px] font-black tracking-[0.4em] uppercase"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gray-900 text-white text-[10px] font-black tracking-widest uppercase shadow-xl"
           >
-            <Sparkles size={14} /> The Elite Hunter's Engine
+            <Sparkles size={14} className="text-[#10B981]" /> 500+ New Jobs Added Today
           </motion.div>
 
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter text-gray-900 leading-[0.9]"
-          >
-            Find your next <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#10B981] to-[#3B82F6]">
-              Joblify.
-            </span>
-          </motion.h1>
+          <div className="space-y-4">
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter text-gray-900 leading-tight"
+            >
+              Hire <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#10B981] via-[#10B981] to-blue-600">Faster.</span>
+            </motion.h1>
 
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-xl md:text-2xl text-gray-500 max-w-2xl mx-auto leading-relaxed font-medium"
-          >
-            Stop settling for generic portals. Access real-time verified jobs with direct recruiter notes and verified apply links.
-          </motion.p>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-lg md:text-xl text-gray-500 max-w-xl mx-auto leading-relaxed font-bold"
+            >
+              Get verified job openings from top tech companies. Simple, fast, and 100% real.
+            </motion.p>
+          </div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="flex flex-col sm:flex-row justify-center gap-6 pt-10"
+            className="flex flex-col sm:flex-row justify-center gap-4 pt-4 w-full sm:w-auto"
           >
-            <Link href="/jobs">
-              <Button size="lg" className="bg-[#10B981] hover:bg-[#0D9668] text-white px-10 h-18 text-xl font-black rounded-2xl shadow-xl shadow-[#10B981]/30 active:scale-95 transition-all group">
-                Launch Career <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </Link>
-            <Link href="/pricing">
-              <Button size="lg" variant="outline" className="border-gray-200 bg-gray-50/50 hover:bg-gray-100 px-10 h-18 text-xl font-black rounded-2xl border-2 text-gray-900 transition-all">
-                Go Premium
+            <Button
+              onClick={handleGetStarted}
+              size="lg" className="bg-[#10B981] hover:bg-[#0D9668] text-white px-12 h-16 text-lg font-black rounded-2xl shadow-xl shadow-[#10B981]/20 w-full transition-all hover:scale-105 active:scale-95"
+            >
+              Browse Jobs
+            </Button>
+            <Link href="/pricing" className="w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="border-gray-200 bg-white hover:bg-gray-50 px-12 h-16 text-lg font-black rounded-2xl border-2 text-gray-900 w-full transition-all">
+                View Pricing
               </Button>
             </Link>
           </motion.div>
         </section>
 
-        {/* MARQUEE SECTION */}
-        <section className="relative -mx-4 sm:-mx-6 lg:-mx-8 overflow-hidden py-10">
-          <div className="absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-white to-transparent z-10" />
-          <div className="absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-white to-transparent z-10" />
-          <div className="flex gap-20 animate-marquee whitespace-nowrap items-center opacity-30">
-            {[...COMPANIES, ...COMPANIES].map((name, i) => (
-              <span key={i} className="text-4xl font-black tracking-tighter uppercase text-gray-900">{name}</span>
+        {/* LOGO STRIP */}
+        <section className="py-12 border-y border-gray-100/50">
+          <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-8 opacity-30 grayscale">
+            {COMPANIES.slice(0, 6).map((name) => (
+              <span key={name} className="text-xl font-black tracking-tighter uppercase text-gray-900">{name}</span>
             ))}
           </div>
         </section>
 
-        {/* HOW IT WORKS */}
-        <section className="space-y-20">
-          <div className="text-center space-y-4">
-            <h2 className="text-4xl md:text-6xl font-black tracking-tight text-gray-900">The Joblify Workflow</h2>
-            <p className="text-gray-400 font-black text-lg uppercase tracking-[0.3em] text-[10px]">Engineered for speed, built for results.</p>
+        {/* FEATURES */}
+        <section className="py-32 space-y-20">
+          <div className="text-center space-y-3">
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight text-gray-900 uppercase">How it works</h2>
+            <p className="text-gray-400 font-bold uppercase tracking-widest text-[10px]">Simple steps to your next role</p>
           </div>
-          
-          <div className="grid md:grid-cols-3 gap-10">
+
+          <div className="grid md:grid-cols-3 gap-6">
             {[
-              { 
-                icon: <Target className="text-[#10B981]" size={36} />, 
-                title: "Precision Scraping", 
-                desc: "Our localized engine hunts every 6 hours deep inside product companies to find early access roles." 
+              {
+                icon: <Target className="text-[#10B981]" size={28} />,
+                title: "Daily Hunt",
+                desc: "We scan job boards every hour to find fresh roles before they go viral."
               },
-              { 
-                icon: <Zap className="text-[#3B82F6]" size={36} />, 
-                title: "Verified Links", 
-                desc: "No more dead ends. Premium members get verified application links that take you straight to the recruiter." 
+              {
+                icon: <Zap className="text-blue-500" size={28} />,
+                title: "Direct Links",
+                desc: "Get links that take you straight to the official application page."
               },
-              { 
-                icon: <Shield className="text-[#10B981]" size={36} />, 
-                title: "Curated Strategy", 
-                desc: "We provide insider interview notes for every major company, so you never go into an interview blind." 
+              {
+                icon: <Shield className="text-[#10B981]" size={28} />,
+                title: "Verified",
+                desc: "Every job is manually checked by our team to ensure it is real."
               },
             ].map((item, i) => (
-              <div key={i} className="bg-white p-10 rounded-[3rem] border border-gray-100 shadow-xl group relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#10B981]/5 to-transparent rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl" />
-                <div className="w-20 h-20 rounded-3xl bg-gray-50 border border-gray-100 flex items-center justify-center mb-10 shadow-sm group-hover:scale-110 transition-transform duration-500">
+              <div key={i} className="bg-[#F8FAFC] p-10 rounded-[2.5rem] border border-gray-100 group transition-all hover:bg-white hover:shadow-xl">
+                <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center mb-8 shadow-sm group-hover:scale-110 transition-transform">
                   {item.icon}
                 </div>
-                <h3 className="text-3xl font-black mb-6 text-gray-900">{item.title}</h3>
-                <p className="text-gray-500 leading-relaxed font-bold text-lg">{item.desc}</p>
+                <h3 className="text-xl font-black mb-3 text-gray-900 uppercase tracking-tight">{item.title}</h3>
+                <p className="text-gray-500 text-sm font-bold leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* STATS DECK */}
-        <section className="bg-gray-50 rounded-[4rem] p-12 md:p-20 border border-gray-100 relative shadow-inner group overflow-hidden">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 relative z-10">
-            {[
-              { icon: <Briefcase className="text-[#10B981]" />, label: "Fresh Jobs", value: "12k+" },
-              { icon: <Users className="text-[#3B82F6]" />, label: "Talent Community", value: "48k+" },
-              { icon: <Globe className="text-blue-600" />, label: "Global Partners", value: "150+" },
-              { icon: <CheckCircle2 className="text-[#10B981]" />, label: "Offer Letters", value: "8.5k+" },
-            ].map((stat, i) => (
-              <div key={i} className="text-center space-y-4">
-                <div className="flex justify-center mb-2">{stat.icon}</div>
-                <div className="text-5xl font-black tracking-tighter text-gray-900">{stat.value}</div>
-                <div className="text-gray-400 text-[10px] font-black uppercase tracking-[0.2em]">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </section>
+        {/* FINAL CTA */}
+        <section className="mb-32">
+          <div className="bg-gray-900 rounded-[3rem] p-12 md:p-20 text-center space-y-10 relative overflow-hidden shadow-2xl">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#10B981]/10 blur-[80px] rounded-full" />
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 blur-[80px] rounded-full" />
 
-        {/* CTA FOOTER */}
-        <section className="text-center space-y-10 py-24">
-          <h2 className="text-5xl md:text-7xl font-black tracking-tighter text-gray-900">Ready to dominate?</h2>
-          <motion.div whileHover={{ scale: 1.05 }} className="inline-block">
-            <Link href="/register">
-              <Button size="lg" className="bg-gray-900 text-white hover:bg-black px-20 h-20 text-2xl font-black rounded-3xl shadow-xl active:scale-95 transition-all">
-                Get Started Now — It's Free
+            <h2 className="text-5xl md:text-6xl font-black tracking-tighter text-white relative z-10 leading-tight">Start applying today.</h2>
+            <div className="relative z-10 flex flex-col items-center gap-6">
+              <Button
+                onClick={handleGetStarted}
+                size="lg" className="bg-[#10B981] text-white hover:bg-[#0D9668] px-16 h-18 text-xl font-black rounded-2xl shadow-xl active:scale-95 transition-all"
+              >
+                Get Started Free
               </Button>
-            </Link>
-          </motion.div>
-          <p className="text-gray-400 font-bold flex items-center justify-center gap-2 text-sm uppercase tracking-widest text-[10px]">
-            <ShieldCheck size={18} className="text-[#10B981]" /> No credit card required.
-          </p>
+              <p className="text-gray-500 font-bold flex items-center gap-2 text-[10px] uppercase tracking-widest">
+                <ShieldCheck size={16} className="text-[#10B981]" /> Join 48,000+ users finding work.
+              </p>
+            </div>
+          </div>
         </section>
 
-        <footer className="pt-24 pb-12 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-8 group">
+        <footer className="py-12 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-3">
-            <div className="bg-[#10B981] p-2 rounded-xl group-hover:rotate-12 transition-transform shadow-lg shadow-[#10B981]/20">
-              <Sparkles size={18} className="text-white" />
+            <div className="bg-[#10B981] p-2 rounded-xl text-white shadow-lg shadow-[#10B981]/20">
+              <Sparkles size={18} />
             </div>
             <span className="text-2xl font-black tracking-tighter text-gray-900">Joblify</span>
           </div>
-          <p className="text-gray-400 font-black text-[10px] tracking-[0.3em] uppercase">
-            Professional Hiring Platform.
+          <p className="text-gray-400 font-bold text-[10px] tracking-widest uppercase">
+            Built for modern talent.
           </p>
-          <div className="flex gap-8 text-gray-400 font-bold text-sm">
-            <Link href="#" className="hover:text-[#10B981] transition-colors uppercase tracking-[0.2em] text-[10px]">Twitter</Link>
-            <Link href="#" className="hover:text-[#10B981] transition-colors uppercase tracking-[0.2em] text-[10px]">LinkedIn</Link>
+          <div className="flex gap-8 text-gray-400 font-bold text-[10px] uppercase tracking-widest">
+            <Link href="#" className="hover:text-[#10B981] transition-colors">Privacy</Link>
+            <Link href="#" className="hover:text-[#10B981] transition-colors">Terms</Link>
+            <Link href="#" className="hover:text-gray-900 transition-colors">Twitter</Link>
           </div>
         </footer>
       </div>

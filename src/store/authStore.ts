@@ -22,6 +22,7 @@ interface AuthState {
   setTokens: (token: string, refreshToken: string) => void;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
+  fetchUser: () => Promise<void>;
 }
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
@@ -57,6 +58,14 @@ export const useAuthStore = create<AuthState>()(
         });
       },
       logout: () => set({ user: null, token: null, refreshToken: null }),
+      fetchUser: async () => {
+        const { token } = (useAuthStore.getState() as any);
+        if (!token) return;
+        const userRes = await axios.get(`${API_URL}/users/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        set({ user: userRes.data });
+      },
     }),
     {
       name: 'auth-storage',
