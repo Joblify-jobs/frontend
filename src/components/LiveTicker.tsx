@@ -8,8 +8,12 @@ const LiveTicker = () => {
     "+50 more companies"
   ];
 
-  // Combine rocket info with companies for a single ticker line
-  const tickerItems = [
+  interface TickerItem {
+    text: string;
+    icon?: string;
+  }
+
+  const tickerItems: TickerItem[] = [
     { text: "New jobs added daily", icon: "🚀" },
     ...companies.map(c => ({ text: c }))
   ];

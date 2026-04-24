@@ -50,7 +50,7 @@ const LandingPage = () => {
               transition={{ delay: 0.1 }}
               className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter text-gray-900 leading-tight"
             >
-              Hire <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#10B981] via-[#10B981] to-blue-600">Faster.</span>
+              Find your next <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#10B981] via-[#10B981] to-blue-600">Joblify.</span>
             </motion.h1>
 
             <motion.p 
