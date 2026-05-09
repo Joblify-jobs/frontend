@@ -159,10 +159,12 @@ const LandingPage = () => {
           <p className="text-gray-400 font-bold text-[10px] tracking-widest uppercase">
             Built for modern talent.
           </p>
-          <div className="flex gap-8 text-gray-400 font-bold text-[10px] uppercase tracking-widest">
-            <Link href="#" className="hover:text-[#10B981] transition-colors">Privacy</Link>
-            <Link href="#" className="hover:text-[#10B981] transition-colors">Terms</Link>
-            <Link href="#" className="hover:text-gray-900 transition-colors">Twitter</Link>
+          <div className="flex flex-wrap justify-center gap-8 text-gray-400 font-bold text-[10px] uppercase tracking-widest">
+            <Link href="/privacy" className="hover:text-[#10B981] transition-colors">Privacy</Link>
+            <Link href="/terms" className="hover:text-[#10B981] transition-colors">Terms</Link>
+            <Link href="/refund" className="hover:text-[#10B981] transition-colors">Refund</Link>
+            <Link href="/shipping" className="hover:text-[#10B981] transition-colors">Shipping</Link>
+            <Link href="/contact" className="hover:text-[#10B981] transition-colors">Contact</Link>
           </div>
         </footer>
       </div>
