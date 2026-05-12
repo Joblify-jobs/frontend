@@ -18,7 +18,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 const SuperAdminDashboard = () => {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
-  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'logs'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'payments' | 'logs'>('overview');
   
   // Modals
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -53,6 +53,16 @@ const SuperAdminDashboard = () => {
       const res = await api.get('/super-admin/logs');
       return res.data;
     }
+  });
+
+  // Fetch Pending Payments
+  const { data: pendingPayments } = useQuery({
+    queryKey: ['admin-pending-payments'],
+    queryFn: async () => {
+      const res = await api.get('/super-admin/pending-payments');
+      return res.data;
+    },
+    enabled: activeTab === 'payments'
   });
 
   // Mutations
@@ -96,6 +106,23 @@ const SuperAdminDashboard = () => {
     }
   });
 
+  const approvePaymentMutation = useMutation({
+    mutationFn: async (userId: string) => api.post(`/super-admin/approve-payment/${userId}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-pending-payments'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-stats'] });
+      alert("Payment approved and user notified!");
+    }
+  });
+
+  const rejectPaymentMutation = useMutation({
+    mutationFn: async (userId: string) => api.post(`/super-admin/reject-payment/${userId}?reason=Invalid`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-pending-payments'] });
+      alert("Payment rejected.");
+    }
+  });
+
   const statCards = [
     { title: "Total Users", value: stats?.total_users || "...", icon: <Users className="text-blue-500" /> },
     { title: "Subscribed", value: stats?.subscribed_users || "...", icon: <CreditCard className="text-[#10B981]" /> },
@@ -114,7 +141,7 @@ const SuperAdminDashboard = () => {
           </div>
           
           <div className="flex bg-gray-100 p-1.5 rounded-2xl border border-gray-200">
-            {['overview', 'users', 'logs'].map((tab) => (
+            {['overview', 'users', 'payments', 'logs'].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab as any)}
@@ -297,6 +324,76 @@ const SuperAdminDashboard = () => {
                       </td>
                     </tr>
                   ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        )}
+
+        {activeTab === 'payments' && (
+          <Card className="border-gray-100 shadow-2xl rounded-[3rem] overflow-hidden bg-white">
+            <CardHeader className="px-10 py-10 border-b border-gray-50">
+              <CardTitle className="text-3xl font-black tracking-tighter">Manual Approvals</CardTitle>
+              <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.3em] mt-1">Verify and activate elite status</p>
+            </CardHeader>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left min-w-[800px]">
+                <thead>
+                  <tr className="bg-gray-50/50 border-b border-gray-100">
+                    <th className="px-10 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400">User Details</th>
+                    <th className="px-10 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400 text-center">Transaction ID</th>
+                    <th className="px-10 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400 text-center">Date Submitted</th>
+                    <th className="px-10 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {pendingPayments?.map((u: any) => (
+                    <tr key={u.id} className="hover:bg-gray-50/10 transition-colors group">
+                      <td className="px-10 py-8">
+                         <div className="flex items-center gap-4">
+                           <div className="w-12 h-12 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center font-black text-orange-500">
+                             {u.name[0]}
+                           </div>
+                           <div>
+                             <p className="font-black text-gray-900">{u.name}</p>
+                             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{u.email}</p>
+                           </div>
+                         </div>
+                      </td>
+                      <td className="px-10 py-8 text-center">
+                        <span className="font-mono text-sm font-bold bg-gray-50 px-4 py-2 rounded-xl border border-gray-100">
+                          {u.subscription.manual_transaction_id}
+                        </span>
+                      </td>
+                      <td className="px-10 py-8 text-center text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                        {u.subscription.manual_payment_date ? format(new Date(u.subscription.manual_payment_date), 'dd MMM yyyy, hh:mm a') : 'N/A'}
+                      </td>
+                      <td className="px-10 py-8 text-right">
+                        <div className="flex justify-end gap-3">
+                           <Button 
+                            onClick={() => approvePaymentMutation.mutate(u.id)}
+                            className="h-10 px-6 bg-[#10B981] hover:bg-[#0D9668] text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-[#10B981]/20 flex gap-2"
+                          >
+                            Approve <CheckCircle2 size={14} />
+                          </Button>
+                          <Button 
+                            onClick={() => rejectPaymentMutation.mutate(u.id)}
+                            variant="ghost" 
+                            className="h-10 w-10 p-0 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                          >
+                            <XCircle size={18} />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {(!pendingPayments || pendingPayments.length === 0) && (
+                    <tr>
+                      <td colSpan={4} className="px-10 py-20 text-center text-gray-400 font-bold uppercase tracking-widest text-[10px]">
+                        No pending payments found.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>

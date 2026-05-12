@@ -4,18 +4,13 @@ import { Button } from '@/components/ui/button';
 import { Check, Sparkles, Zap, ShieldCheck, Crown, Rocket } from 'lucide-react';
 import { motion } from 'framer-motion';
 import api from '@/lib/api';
+import { useRouter } from 'next/navigation';
 
 const PricingPage = () => {
+  const router = useRouter();
+  
   const handlePayment = async () => {
-    try {
-      const res = await api.post('/subscriptions/create-payment', { plan: 'elite' });
-      if (res.data && res.data.payment_url) {
-        window.location.href = res.data.payment_url;
-      }
-    } catch (err) {
-      console.error("Payment initiation failed", err);
-      alert("System busy. Please try again later.");
-    }
+    router.push('/pay');
   };
 
   return (
@@ -88,7 +83,7 @@ const PricingPage = () => {
 
               <div className="flex items-center justify-center gap-2">
                 <ShieldCheck size={14} className="text-[#10B981]" />
-                <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Secure Payment by Instamojo</p>
+                <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Secure Manual Verification</p>
               </div>
             </div>
           </motion.div>
