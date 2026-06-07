@@ -1,5 +1,5 @@
 "use client";
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Check, Sparkles, Zap, ShieldCheck, Crown, Rocket } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -8,6 +8,19 @@ import { useRouter } from 'next/navigation';
 
 const PricingPage = () => {
   const router = useRouter();
+  const [amount, setAmount] = useState(99);
+
+  useEffect(() => {
+    const fetchAmount = async () => {
+      try {
+        const res = await api.get('/subscriptions/amount');
+        setAmount(res.data.subscription_amount);
+      } catch (err) {
+        console.error("Failed to fetch subscription amount", err);
+      }
+    };
+    fetchAmount();
+  }, []);
   
   const handlePayment = async () => {
     router.push('/pay');
@@ -53,8 +66,8 @@ const PricingPage = () => {
               <div className="space-y-1">
                 <h2 className="text-sm font-black text-[#10B981] uppercase tracking-widest">Full Access</h2>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-6xl font-black text-gray-900 tracking-tighter">₹99</span>
-                  <span className="text-gray-400 font-bold text-[10px] uppercase tracking-widest">/ month</span>
+                  <span className="text-6xl font-black text-gray-900 tracking-tighter">₹{amount}</span>
+                  <span className="text-gray-400 font-bold text-[10px] uppercase tracking-widest">/ 3 months</span>
                 </div>
               </div>
 

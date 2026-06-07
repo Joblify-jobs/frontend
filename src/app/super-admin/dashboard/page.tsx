@@ -6,7 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
   Users, CreditCard, BarChart3, TrendingUp, 
   AlertCircle, Search, Trash2, Edit2, 
-  Plus, CheckCircle2, XCircle, ChevronRight
+  Plus, CheckCircle2, XCircle, ChevronRight,
+  Settings, Shield
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -18,7 +19,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 const SuperAdminDashboard = () => {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
-  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'payments' | 'logs'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'payments' | 'billing' | 'logs'>('overview');
   
   // Modals
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -27,6 +28,7 @@ const SuperAdminDashboard = () => {
   
   // Forms
   const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'user' });
+  const [newPrice, setNewPrice] = useState<number>(99);
 
   // Fetch Stats
   const { data: stats } = useQuery({
@@ -63,6 +65,17 @@ const SuperAdminDashboard = () => {
       return res.data;
     },
     enabled: activeTab === 'payments'
+  });
+
+  // Fetch Billing Settings
+  const { data: systemSettings } = useQuery({
+    queryKey: ['admin-settings'],
+    queryFn: async () => {
+      const res = await api.get('/super-admin/settings');
+      setNewPrice(res.data.subscription_amount);
+      return res.data;
+    },
+    enabled: activeTab === 'billing'
   });
 
   // Mutations
@@ -111,7 +124,7 @@ const SuperAdminDashboard = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-pending-payments'] });
       queryClient.invalidateQueries({ queryKey: ['admin-stats'] });
-      alert("Payment approved and user notified!");
+      alert("Payment approved and user subscription activated for 3 months!");
     }
   });
 
@@ -120,6 +133,16 @@ const SuperAdminDashboard = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-pending-payments'] });
       alert("Payment rejected.");
+    }
+  });
+
+  const updateSettingsMutation = useMutation({
+    mutationFn: async (amount: number) => {
+      return api.post('/super-admin/settings', { subscription_amount: amount });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-settings'] });
+      alert("Billing settings updated successfully!");
     }
   });
 
@@ -141,7 +164,7 @@ const SuperAdminDashboard = () => {
           </div>
           
           <div className="flex bg-gray-100 p-1.5 rounded-2xl border border-gray-200">
-            {['overview', 'users', 'payments', 'logs'].map((tab) => (
+            {['overview', 'users', 'payments', 'billing', 'logs'].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab as any)}
@@ -337,12 +360,13 @@ const SuperAdminDashboard = () => {
               <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.3em] mt-1">Verify and activate elite status</p>
             </CardHeader>
             <div className="overflow-x-auto">
-              <table className="w-full text-left min-w-[800px]">
+              <table className="w-full text-left min-w-[1000px]">
                 <thead>
                   <tr className="bg-gray-50/50 border-b border-gray-100">
-                    <th className="px-10 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400">User Details</th>
+                    <th className="px-10 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400">User Identity</th>
+                    <th className="px-10 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400 text-center font-bold">Paid By / Amount / Time</th>
                     <th className="px-10 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400 text-center">Transaction ID</th>
-                    <th className="px-10 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400 text-center">Date Submitted</th>
+                    <th className="px-10 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400 text-center">Transaction Details</th>
                     <th className="px-10 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400 text-right">Actions</th>
                   </tr>
                 </thead>
@@ -361,12 +385,17 @@ const SuperAdminDashboard = () => {
                          </div>
                       </td>
                       <td className="px-10 py-8 text-center">
+                        <p className="font-bold text-sm text-gray-900">{u.subscription.manual_payment_name || "N/A"}</p>
+                        <p className="text-sm font-black text-[#10B981]">₹{u.subscription.manual_payment_amount || "0.00"}</p>
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{u.subscription.manual_payment_time || "N/A"}</p>
+                      </td>
+                      <td className="px-10 py-8 text-center">
                         <span className="font-mono text-sm font-bold bg-gray-50 px-4 py-2 rounded-xl border border-gray-100">
                           {u.subscription.manual_transaction_id}
                         </span>
                       </td>
-                      <td className="px-10 py-8 text-center text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                        {u.subscription.manual_payment_date ? format(new Date(u.subscription.manual_payment_date), 'dd MMM yyyy, hh:mm a') : 'N/A'}
+                      <td className="px-10 py-8 max-w-xs text-center text-xs font-bold text-gray-600 leading-relaxed italic">
+                        "{u.subscription.manual_payment_details || "No comments"}"
                       </td>
                       <td className="px-10 py-8 text-right">
                         <div className="flex justify-end gap-3">
@@ -389,7 +418,7 @@ const SuperAdminDashboard = () => {
                   ))}
                   {(!pendingPayments || pendingPayments.length === 0) && (
                     <tr>
-                      <td colSpan={4} className="px-10 py-20 text-center text-gray-400 font-bold uppercase tracking-widest text-[10px]">
+                      <td colSpan={5} className="px-10 py-20 text-center text-gray-400 font-bold uppercase tracking-widest text-[10px]">
                         No pending payments found.
                       </td>
                     </tr>
@@ -398,6 +427,46 @@ const SuperAdminDashboard = () => {
               </table>
             </div>
           </Card>
+        )}
+
+        {activeTab === 'billing' && (
+          <div className="max-w-2xl mx-auto">
+            <Card className="border-gray-100 shadow-2xl rounded-[3rem] overflow-hidden bg-white">
+              <CardHeader className="px-10 py-10 border-b border-gray-50 bg-gray-50/50 flex flex-row items-center gap-5">
+                <div className="bg-[#10B981]/10 p-3.5 rounded-2xl text-[#10B981]">
+                  <Settings size={24} />
+                </div>
+                <div>
+                  <CardTitle className="text-2xl font-black tracking-tighter">Billing settings</CardTitle>
+                  <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest mt-1">Configure subscription plans and pricing</p>
+                </div>
+              </CardHeader>
+              <CardContent className="p-10 space-y-8">
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black text-gray-900 uppercase tracking-widest px-1">Subscription Price (INR)</label>
+                  <div className="relative">
+                    <span className="absolute left-6 top-1/2 -translate-y-1/2 font-black text-gray-400">₹</span>
+                    <Input 
+                      type="number"
+                      value={newPrice}
+                      onChange={(e) => setNewPrice(Number(e.target.value))}
+                      placeholder="e.g. 99"
+                      className="h-16 pl-12 bg-gray-50 border-gray-100 rounded-2xl font-black text-lg focus:ring-4 focus:ring-[#10B981]/10"
+                    />
+                  </div>
+                  <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest px-1">This price will be dynamically loaded on pricing page and scan checkout.</p>
+                </div>
+
+                <Button 
+                  onClick={() => updateSettingsMutation.mutate(newPrice)}
+                  disabled={updateSettingsMutation.isPending}
+                  className="w-full bg-[#10B981] hover:bg-[#0D9668] text-white h-16 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl transition-all"
+                >
+                  {updateSettingsMutation.isPending ? "Saving..." : "Save Pricing Plan"}
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         )}
 
         {/* Add Admin Modal */}

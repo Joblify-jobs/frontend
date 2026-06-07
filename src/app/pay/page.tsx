@@ -10,9 +10,14 @@ import { useRouter } from 'next/navigation';
 
 const ManualPaymentPage = () => {
   const [transactionId, setTransactionId] = useState('');
+  const [name, setName] = useState('');
+  const [amountPaid, setAmountPaid] = useState('');
+  const [paymentTime, setPaymentTime] = useState('');
+  const [transactionDetails, setTransactionDetails] = useState('');
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [status, setStatus] = useState<any>(null);
+  const [price, setPrice] = useState(99);
   const router = useRouter();
 
   useEffect(() => {
@@ -29,17 +34,33 @@ const ManualPaymentPage = () => {
         console.error("Failed to fetch status", err);
       }
     };
+    
+    const fetchAmount = async () => {
+      try {
+        const res = await api.get('/subscriptions/amount');
+        setPrice(res.data.subscription_amount);
+        setAmountPaid(String(res.data.subscription_amount));
+      } catch (err) {
+        console.error("Failed to fetch subscription amount", err);
+      }
+    };
+
     checkStatus();
+    fetchAmount();
   }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!transactionId.trim()) return;
+    if (!transactionId.trim() || !name.trim() || !amountPaid || !paymentTime.trim() || !transactionDetails.trim()) return;
 
     setLoading(true);
     try {
       const formData = new FormData();
       formData.append('transaction_id', transactionId);
+      formData.append('name', name);
+      formData.append('amount', amountPaid);
+      formData.append('time', paymentTime);
+      formData.append('transaction_details', transactionDetails);
       await api.post('/subscriptions/submit-manual-payment', formData);
       setSubmitted(true);
     } catch (err) {
@@ -92,7 +113,7 @@ const ManualPaymentPage = () => {
       {/* Background Decor */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-screen h-screen bg-[radial-gradient(circle_at_50%_0%,rgba(16,185,129,0.08)_0%,transparent_50%)] pointer-events-none" />
       
-      <div className="max-w-4xl mx-auto px-6 pt-16 pb-20 relative z-10">
+      <div className="max-w-5xl mx-auto px-6 pt-16 pb-20 relative z-10">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           
           {/* Left Side: QR Code */}
@@ -109,7 +130,7 @@ const ManualPaymentPage = () => {
                 Scan & <span className="text-[#10B981]">Pay</span>
               </h1>
               <p className="text-sm font-bold text-gray-500 uppercase tracking-widest">
-                Upgrade to Elite by scanning the QR code below.
+                Upgrade to Elite (3 Months Access) by scanning the QR code below.
               </p>
             </div>
 
@@ -126,7 +147,7 @@ const ManualPaymentPage = () => {
                 </div>
                 <div className="text-center">
                   <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Amount to Pay</p>
-                  <p className="text-4xl font-black text-gray-900">₹99.00</p>
+                  <p className="text-4xl font-black text-gray-900">₹{price.toFixed(2)}</p>
                 </div>
               </div>
             </div>
@@ -145,17 +166,63 @@ const ManualPaymentPage = () => {
           >
             <div className="space-y-2">
               <h2 className="text-xl font-black tracking-tighter text-gray-900 uppercase">Confirm Payment</h2>
-              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Enter transaction ID after payment</p>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Enter payment details after scanning</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-3">
+                <label className="text-[10px] font-black text-gray-900 uppercase tracking-widest px-1">Your Name</label>
+                <Input 
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Enter your name"
+                  className="h-14 bg-gray-50 border-gray-100 rounded-xl px-6 font-bold text-sm focus:ring-[#10B981] focus:border-[#10B981]"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black text-gray-900 uppercase tracking-widest px-1">Amount Paid (₹)</label>
+                  <Input 
+                    type="number"
+                    value={amountPaid}
+                    onChange={(e) => setAmountPaid(e.target.value)}
+                    placeholder="e.g. 99"
+                    className="h-14 bg-gray-50 border-gray-100 rounded-xl px-6 font-bold text-sm focus:ring-[#10B981] focus:border-[#10B981]"
+                    required
+                  />
+                </div>
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black text-gray-900 uppercase tracking-widest px-1">Time of Payment</label>
+                  <Input 
+                    value={paymentTime}
+                    onChange={(e) => setPaymentTime(e.target.value)}
+                    placeholder="e.g. 3:30 PM today"
+                    className="h-14 bg-gray-50 border-gray-100 rounded-xl px-6 font-bold text-sm focus:ring-[#10B981] focus:border-[#10B981]"
+                    required
+                  />
+                </div>
+              </div>
+
               <div className="space-y-3">
                 <label className="text-[10px] font-black text-gray-900 uppercase tracking-widest px-1">Transaction Ref / ID</label>
                 <Input 
                   value={transactionId}
                   onChange={(e) => setTransactionId(e.target.value)}
-                  placeholder="e.g. 1234567890"
+                  placeholder="e.g. UPI Ref 1234567890"
                   className="h-14 bg-gray-50 border-gray-100 rounded-xl px-6 font-mono text-sm focus:ring-[#10B981] focus:border-[#10B981]"
+                  required
+                />
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-[10px] font-black text-gray-900 uppercase tracking-widest px-1">Transaction Details</label>
+                <Input 
+                  value={transactionDetails}
+                  onChange={(e) => setTransactionDetails(e.target.value)}
+                  placeholder="e.g. Paid from HDFC account ending in 1234"
+                  className="h-14 bg-gray-50 border-gray-100 rounded-xl px-6 font-bold text-sm focus:ring-[#10B981] focus:border-[#10B981]"
                   required
                 />
               </div>
@@ -169,7 +236,7 @@ const ManualPaymentPage = () => {
 
               <Button 
                 type="submit"
-                disabled={loading || !transactionId}
+                disabled={loading || !transactionId || !name || !amountPaid || !paymentTime || !transactionDetails}
                 className="w-full bg-[#10B981] hover:bg-[#059669] text-white h-14 rounded-xl font-black text-sm uppercase tracking-widest shadow-xl shadow-[#10B981]/20 transition-all hover:scale-[1.02] active:scale-[0.98] flex gap-2"
               >
                 {loading ? "Submitting..." : "Submit Payment"} <CheckCircle2 size={18} />
